@@ -6,6 +6,7 @@
 #include "linux.h"
 
 
+
 int kwoty[12] = {500, 1000, 2000, 5000, 10000, 20000, 40000, 75000, 125000, 250000, 500000, 1000000};
 
 int obecna_kwota, wybor;
@@ -121,17 +122,25 @@ pytanie pyt[MAX] = {
 
 void tel_do_przyjaciela(pytanie q)
 {
-    sleep_seconds(1);
-    printf("Czess! Widze, ze bierzesz udzial w programie Milionerzy i potrzebujesz pomocy");
-    sleep_seconds(1);
-    printf("To pytanie wydaje sie byc bardzo trudne. Musisz dac mi chwile");
-    sleep_seconds(1);
-    printf("Wydaje mi sie, ze poprawna odpowiedzi to: %d", q.poprawna_odpowiedz + 1);
+    sleep_seconds(2);
+    printf("Czesc! Widze, ze bierzesz udzial w programie Milionerzy i potrzebujesz pomocy\n");
+    sleep_seconds(2);
+    printf("To pytanie wydaje sie byc bardzo trudne. Musisz dac mi chwile\n");
+    sleep_seconds(2);
+    printf("Wydaje mi sie, ze poprawna odpowiedzi to: %d\n", q.poprawna_odpowiedz + 1);
+}
+
+void opinia_publicznosci(pytanie q)
+{
+    sleep_seconds(2);
+    printf("Publicznosc sugeruje, ze poprawna odpowiedz to: %d\n", q.poprawna_odpowiedz + 1);
 }
 
 
 int main()
 {
+    int tel = 1, publicznosc = 1;
+
     for (int i = 0; i < 12; i++)
     {
         obecna_kwota = kwoty[i];
@@ -140,46 +149,65 @@ int main()
         int nr_pyt = wylosujPytanie();
         zadajPytanie(pyt[nr_pyt]);
         printf("\n");
-        printf("Jeśli chcesz skorzystać z telefonu do przyjaciela wpisz: 9\n");
-        printf("Podaj odpowiedz: ");
-        scanf("%d", &wybor);
+        printf("Jesli chcesz skorzystac z telefonu do przyjaciela wpisz: 9\n");
+        printf("Jesli chcesz spytac publicznosci o opinie wpisz: 8\n");
 
-
-
-        system("cls");
-
-        if(wybor-1 == pyt[nr_pyt].poprawna_odpowiedz)
+        int odpowiedz_poprawna = 0;
+        while (!odpowiedz_poprawna)
         {
-            if(obecna_kwota == 1000000)
+            printf("Podaj odpowiedz: ");
+            scanf("%d", &wybor);
+
+            if (wybor == 9)
             {
-                printf("GRATULACJE!!!\n ZOSTALES MILIONEREM!!!");
+                if (tel == 1) {
+                    tel_do_przyjaciela(pyt[nr_pyt]);
+                    tel = 0;
+                }
+                else {
+                    printf("Juz wykorzystales to kolo ratunkowe!");
+                }
+            }
+            else if (wybor == 8)
+            {
+                if (publicznosc == 1) {
+                    opinia_publicznosci(pyt[nr_pyt]);
+                    publicznosc = 0;
+                }
+                else {
+                    printf("Juz wykorzystales to kolo ratunkowe!");
+                }
+            }
+            else if (wybor-1 == pyt[nr_pyt].poprawna_odpowiedz)
+            {
+                odpowiedz_poprawna = 1;
+                if (obecna_kwota == 1000000)
+                {
+                    printf("GRATULACJE!!!\n ZOSTALES MILIONEREM!!!\n");
+                    sleep_seconds(3);
+                    system("cls");
+                }
+                else
+                {
+                    printf("Poprawna odpowiedz! Przechodzisz dalej!\n");
+                    sleep_seconds(3);
+                    system("cls");
+                }
+            }
+            else if (wybor != 9)
+            {
+                printf("Niestety twoja odpowiedz nie jest poprawna. Odpadasz z gry.\n");
+                printf("Poprawna odpowiedz to: %d\n", pyt[nr_pyt].poprawna_odpowiedz + 1);
+                printf("Twoja wygrana to: %d\n", obecna_kwota);
                 sleep_seconds(3);
                 system("cls");
-
+                return 0;
             }
-            else
-            {
-                printf("Poprawna odpowiedz! Przechodzisz dalej!\n");
-                sleep_seconds(3);
-                system("cls");
-            }
-
-        }
-        else if (wybor == 9)
-        {
-            tel_do_przyjaciela(pyt[nr_pyt]);
-        }
-        else
-        {
-            printf("Niestety twoja odpowiedz nie jest poprawna. Odpadasz z gry.\n");
-            printf("Poprawna odpowiedz to: %d\n", pyt[nr_pyt].poprawna_odpowiedz+1);
-            printf("Twoja wygrana to: %d", obecna_kwota);
-            sleep_seconds(3);
-            system("cls");
-            break;
         }
     }
-    printf("Dziekujemy za udzial w naszej grze!");
+
+    system("cls");
+    printf("Dziekujemy za udzial w naszej grze!\n");
     sleep_seconds(3);
     return 0;
 }
